@@ -65,7 +65,13 @@ function App() {
     svg.append("g").attr("id", "y-axis").call(yAxis);
 
     // Define a color scale
-    const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+    const colorScale = d3
+      .scaleSequential(d3.interpolateRdYlBu)
+      .domain(d3.extent(data.monthlyVariance, (d) => d.variance))
+      .domain([
+        d3.extent(data.monthlyVariance, (d) => d.variance)[1],
+        d3.extent(data.monthlyVariance, (d) => d.variance)[0],
+      ]); // Flip the domain
 
     // Create the heat map cells
     svg
