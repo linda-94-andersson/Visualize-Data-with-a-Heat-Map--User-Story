@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import * as d3 from "d3";
 import "./App.css";
 
 function App() {
   const [data, setData] = useState([]);
+  const baseTemperatureRef = useRef(null); // Create a ref for baseTemperature
 
   useEffect(() => {
     // Fetch the dataset using Axios
@@ -14,6 +15,7 @@ function App() {
       )
       .then((response) => {
         setData(response.data);
+        baseTemperatureRef.current = response.data.baseTemperature; // Set the baseTemperature using the ref
         createHeatMap(response.data);
       })
       .catch((error) => console.error(error));
@@ -117,15 +119,16 @@ function App() {
       .call(legendAxis);
   };
 
-  const handleMouseOver = (event, d) => {
+  const handleMouseOver = (event) => {
     const tooltip = d3.select("#tooltip");
+    const d = d3.select(event.target).data()[0];
     tooltip.style("display", "inline");
     tooltip.style("left", event.pageX + 10 + "px");
     tooltip.style("top", event.pageY + 10 + "px");
     tooltip.attr("data-year", d3.timeFormat("%Y")(d.year));
     tooltip.html(
       `${d3.timeFormat("%B %Y")(d.year)}<br/>Temperature: ${(
-        data.baseTemperature + d.variance
+        baseTemperatureRef.current + d.variance
       ).toFixed(2)}°C<br/>Variance: ${d.variance.toFixed(2)}°C`
     );
   };
