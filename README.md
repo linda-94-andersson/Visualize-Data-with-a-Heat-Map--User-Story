@@ -1,5 +1,5 @@
 ## Deployment
-* WIP
+* https://linda-andersson-heat-map.netlify.app/
 
 ## Skills used for this project
 * React
